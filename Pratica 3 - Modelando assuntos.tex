@@ -1,0 +1,1029 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass[11pt]{article}
+
+    
+    
+    \usepackage[T1]{fontenc}
+    % Nicer default font than Computer Modern for most use cases
+    \usepackage{palatino}
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % We will generate all images so they have a width \maxwidth. This means
+    % that they will get their normal width if they fit onto the page, but
+    % are scaled down if they would overflow the margins.
+    \makeatletter
+    \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth
+    \else\Gin@nat@width\fi}
+    \makeatother
+    \let\Oldincludegraphics\includegraphics
+    % Set max figure width to be 80% of text width, for now hardcoded.
+    \renewcommand{\includegraphics}[1]{\Oldincludegraphics[width=.8\maxwidth]{#1}}
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionLabelFormat{nolabel}{}
+    \captionsetup{labelformat=nolabel}
+
+    \usepackage{adjustbox} % Used to constrain images to a maximum size 
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage[utf8x]{inputenc} % Allow utf-8 characters in the tex document
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range 
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    
+
+    
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatability definitions
+    \def\gt{>}
+    \def\lt{<}
+    % Document parameters
+    \title{Pratica 3 - Modelando assuntos}
+    
+    
+    
+
+    % Pygments definitions
+    
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\expandafter\def\csname PY@tok@w\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\expandafter\def\csname PY@tok@gh\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@nl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@sb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@gp\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@sx\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@vg\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@ni\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\expandafter\def\csname PY@tok@mh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@cs\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@sh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@nc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@cp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@bp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\expandafter\def\csname PY@tok@ow\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@cpf\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@sd\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@kr\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@o\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@si\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@nf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@kc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@sr\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@c1\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@na\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\expandafter\def\csname PY@tok@no\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gs\endcsname{\let\PY@bf=\textbf}
+\expandafter\def\csname PY@tok@vi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@nt\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@m\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mo\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@se\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\expandafter\def\csname PY@tok@nb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@err\endcsname{\def\PY@bc##1{\setlength{\fboxsep}{0pt}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}
+\expandafter\def\csname PY@tok@nd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@kp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nv\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@k\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@cm\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gr\endcsname{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\expandafter\def\csname PY@tok@s2\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@ch\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@s\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@gi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@c\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@s1\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@ss\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@gu\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@ge\endcsname{\let\PY@it=\textit}
+\expandafter\def\csname PY@tok@vc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@ne\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\expandafter\def\csname PY@tok@kn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kd\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@mf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@sc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@go\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\expandafter\def\csname PY@tok@il\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % Exact colors from NB
+    \definecolor{incolor}{rgb}{0.0, 0.0, 0.5}
+    \definecolor{outcolor}{rgb}{0.545, 0.0, 0.0}
+
+
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    
+    \section{Prática 3 - Modelando
+assuntos}\label{pruxe1tica-3---modelando-assuntos}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}2}]:} \PY{k+kn}{from} \PY{n+nn}{gensim} \PY{k+kn}{import} \PY{n}{corpora}\PY{p}{,} \PY{n}{models}\PY{p}{,} \PY{n}{similarities}
+        \PY{k+kn}{from} \PY{n+nn}{nltk.tokenize} \PY{k+kn}{import} \PY{n}{WordPunctTokenizer}
+        \PY{k+kn}{from} \PY{n+nn}{nltk.corpus} \PY{k+kn}{import} \PY{n}{stopwords}
+        \PY{k+kn}{from} \PY{n+nn}{string} \PY{k+kn}{import} \PY{n}{punctuation}
+        \PY{k+kn}{from} \PY{n+nn}{pprint} \PY{k+kn}{import} \PY{n}{pprint}
+\end{Verbatim}
+
+    \subsection{Definindo um problema}\label{definindo-um-problema}
+
+A epidemia de Zika gerou uma epidemia de publicações científicas sobre o
+assunto. Como é uma doença pouco conhecida, pesquisas em diversas áreas
+do conhecimento precisam ser conduzidas para poder preencher a lacuna da
+nossa ignorância.
+
+Neste exercício vamos analizar um corpus de resumos de artigos
+publicados sobre o assunto e tentar modelar os assuntos existentes.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}3}]:} \PY{n}{dicionario} \PY{o}{=} \PY{n}{corpora}\PY{o}{.}\PY{n}{Dictionary}\PY{o}{.}\PY{n}{load}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Dicionario\PYZus{}zika.dict}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{corpus} \PY{o}{=} \PY{n}{corpora}\PY{o}{.}\PY{n}{MmCorpus}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{corpus\PYZus{}zika}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}4}]:} \PY{k}{print}\PY{p}{(}\PY{n}{dicionario}\PY{p}{)}
+        \PY{k}{print}\PY{p}{(}\PY{n}{corpus}\PY{p}{)}
+        \PY{l+m+mi}{498}\PY{o}{*}\PY{l+m+mi}{5886}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Dictionary(5886 unique tokens: ['monotypic', 'menace', 'models', 'ultrasonographic', 'Orungo']{\ldots})
+MmCorpus(498 documents, 5886 features, 24027 non-zero entries)
+
+    \end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}4}]:} 2931228
+\end{Verbatim}
+        
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}5}]:} \PY{k}{print}\PY{p}{(}\PY{n}{dicionario}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+        \PY{k}{for} \PY{n}{doc} \PY{o+ow}{in} \PY{n}{corpus}\PY{p}{[}\PY{p}{:}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{:}
+            \PY{k}{print}\PY{p}{(}\PY{n}{doc}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+virus
+[(0, 2.0), (1, 1.0), (2, 1.0), (3, 1.0), (4, 1.0), (5, 3.0), (6, 1.0), (7, 2.0), (8, 3.0), (9, 1.0), (10, 1.0), (11, 1.0), (12, 2.0), (13, 1.0), (14, 1.0), (15, 1.0), (16, 2.0), (17, 1.0), (18, 2.0), (19, 1.0), (20, 1.0), (21, 1.0), (22, 1.0), (23, 1.0), (24, 1.0), (25, 2.0), (26, 1.0), (27, 1.0), (28, 1.0), (29, 1.0), (30, 2.0), (31, 1.0), (32, 2.0), (33, 1.0), (34, 1.0), (35, 2.0), (36, 1.0), (37, 3.0), (38, 3.0), (39, 1.0), (40, 3.0), (41, 1.0), (42, 1.0), (43, 2.0), (44, 1.0), (45, 2.0), (46, 3.0), (47, 3.0), (48, 5.0), (49, 1.0), (50, 1.0), (51, 2.0), (52, 2.0), (53, 1.0), (54, 1.0), (55, 1.0), (56, 1.0), (57, 1.0), (58, 1.0), (59, 1.0), (60, 1.0), (61, 1.0), (62, 2.0), (63, 1.0), (64, 1.0), (65, 1.0), (66, 1.0), (67, 3.0), (68, 3.0), (69, 1.0), (70, 2.0), (71, 1.0), (72, 1.0), (73, 1.0), (74, 1.0), (75, 1.0), (76, 2.0), (77, 1.0), (78, 5.0), (79, 1.0), (80, 1.0), (81, 1.0), (82, 1.0), (83, 12.0), (84, 1.0), (85, 1.0), (86, 1.0), (87, 1.0), (88, 1.0), (89, 2.0), (90, 2.0), (91, 1.0), (92, 1.0), (93, 3.0), (94, 1.0), (95, 3.0), (96, 2.0), (97, 1.0), (98, 1.0), (99, 1.0), (100, 1.0), (101, 1.0), (102, 1.0), (103, 1.0), (104, 1.0), (105, 1.0), (106, 1.0), (107, 4.0), (108, 2.0), (109, 1.0), (110, 4.0), (111, 1.0), (112, 1.0), (113, 3.0), (114, 1.0), (115, 2.0), (116, 1.0), (117, 1.0), (118, 2.0), (119, 1.0), (120, 1.0), (121, 1.0), (122, 1.0), (123, 1.0), (124, 1.0), (125, 1.0), (126, 1.0), (127, 1.0), (128, 3.0), (129, 2.0), (130, 1.0), (131, 2.0), (132, 9.0), (133, 1.0), (134, 4.0), (135, 2.0), (136, 1.0), (137, 1.0), (138, 1.0), (139, 1.0), (140, 2.0), (141, 1.0), (142, 1.0), (143, 1.0), (144, 1.0), (145, 1.0), (146, 1.0), (147, 1.0), (148, 1.0), (149, 1.0), (150, 1.0), (151, 1.0), (152, 1.0), (153, 1.0), (154, 1.0), (155, 1.0), (156, 1.0), (157, 2.0), (158, 2.0)]
+[(0, 2.0), (4, 1.0), (14, 1.0), (28, 2.0), (33, 2.0), (35, 1.0), (47, 1.0), (63, 1.0), (65, 1.0), (83, 2.0), (91, 1.0), (105, 1.0), (110, 1.0), (153, 1.0), (158, 1.0), (159, 2.0), (160, 1.0), (161, 1.0), (162, 1.0), (163, 1.0), (164, 1.0), (165, 2.0), (166, 1.0), (167, 1.0), (168, 5.0), (169, 1.0), (170, 1.0), (171, 1.0), (172, 1.0), (173, 1.0), (174, 1.0), (175, 1.0), (176, 1.0), (177, 1.0), (178, 1.0), (179, 1.0), (180, 1.0), (181, 2.0), (182, 1.0), (183, 1.0), (184, 1.0), (185, 1.0), (186, 1.0), (187, 3.0), (188, 1.0), (189, 1.0), (190, 1.0), (191, 2.0), (192, 1.0), (193, 1.0), (194, 1.0), (195, 1.0), (196, 1.0), (197, 1.0), (198, 1.0), (199, 1.0), (200, 1.0), (201, 1.0), (202, 1.0), (203, 1.0), (204, 1.0), (205, 1.0), (206, 1.0), (207, 1.0), (208, 1.0), (209, 1.0), (210, 1.0), (211, 1.0), (212, 1.0), (213, 1.0), (214, 1.0), (215, 1.0), (216, 1.0), (217, 1.0), (218, 1.0), (219, 1.0), (220, 1.0), (221, 1.0), (222, 1.0), (223, 1.0), (224, 2.0), (225, 2.0), (226, 1.0), (227, 1.0), (228, 1.0), (229, 1.0), (230, 1.0), (231, 1.0), (232, 1.0), (233, 1.0), (234, 1.0), (235, 1.0), (236, 1.0), (237, 1.0), (238, 1.0), (239, 1.0), (240, 3.0), (241, 1.0), (242, 1.0), (243, 1.0), (244, 1.0), (245, 1.0), (246, 1.0), (247, 1.0), (248, 1.0), (249, 1.0), (250, 1.0), (251, 1.0), (252, 1.0), (253, 2.0), (254, 1.0), (255, 1.0), (256, 1.0), (257, 1.0), (258, 1.0), (259, 1.0), (260, 1.0), (261, 1.0), (262, 1.0), (263, 1.0), (264, 1.0), (265, 1.0), (266, 1.0), (267, 1.0), (268, 1.0)]
+[(0, 1.0), (4, 1.0), (12, 4.0), (14, 1.0), (26, 1.0), (33, 1.0), (35, 1.0), (47, 1.0), (65, 1.0), (70, 2.0), (83, 7.0), (94, 1.0), (107, 1.0), (138, 1.0), (153, 2.0), (154, 1.0), (162, 1.0), (166, 1.0), (185, 1.0), (199, 1.0), (214, 1.0), (228, 1.0), (239, 1.0), (251, 1.0), (263, 1.0), (269, 1.0), (270, 1.0), (271, 2.0), (272, 1.0), (273, 1.0), (274, 1.0), (275, 1.0), (276, 1.0), (277, 1.0), (278, 1.0), (279, 2.0), (280, 1.0), (281, 1.0), (282, 1.0), (283, 1.0), (284, 1.0), (285, 1.0), (286, 1.0), (287, 1.0), (288, 1.0), (289, 1.0), (290, 2.0), (291, 1.0), (292, 1.0), (293, 1.0), (294, 1.0), (295, 1.0), (296, 1.0), (297, 1.0), (298, 1.0), (299, 1.0), (300, 2.0), (301, 1.0), (302, 1.0), (303, 1.0), (304, 1.0), (305, 1.0), (306, 1.0), (307, 1.0), (308, 1.0), (309, 1.0), (310, 1.0), (311, 1.0), (312, 1.0), (313, 1.0), (314, 1.0), (315, 1.0), (316, 1.0), (317, 1.0), (318, 1.0), (319, 1.0), (320, 1.0), (321, 1.0), (322, 1.0), (323, 1.0), (324, 1.0), (325, 1.0), (326, 1.0), (327, 1.0), (328, 1.0), (329, 1.0)]
+
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} 
+\end{Verbatim}
+
+    \subsection{Latent Semantic Indexing -
+LSI}\label{latent-semantic-indexing---lsi}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}6}]:} \PY{n}{tfidf} \PY{o}{=} \PY{n}{models}\PY{o}{.}\PY{n}{TfidfModel}\PY{p}{(}\PY{n}{corpus}\PY{p}{)}
+        \PY{n}{corpus\PYZus{}tfidf} \PY{o}{=} \PY{n}{tfidf}\PY{p}{[}\PY{n}{corpus}\PY{p}{]}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} 
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}7}]:} \PY{n}{lsi} \PY{o}{=} \PY{n}{models}\PY{o}{.}\PY{n}{LsiModel}\PY{p}{(}\PY{n}{corpus\PYZus{}tfidf}\PY{p}{,} \PY{n}{id2word}\PY{o}{=}\PY{n}{dicionario}\PY{p}{,} \PY{n}{num\PYZus{}topics}\PY{o}{=}\PY{l+m+mi}{30}\PY{p}{)}
+        \PY{n}{corpus\PYZus{}lsi} \PY{o}{=} \PY{n}{lsi}\PY{p}{[}\PY{n}{corpus\PYZus{}tfidf}\PY{p}{]}
+\end{Verbatim}
+
+    Depois de estimar o modelo, podemos olhar os 30 assuntos, listando
+apenas as 4 palavras mais importantes.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}8}]:} \PY{n}{lsi}\PY{o}{.}\PY{n}{show\PYZus{}topics}\PY{p}{(}\PY{l+m+mi}{30}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{)}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}8}]:} [(0, '0.342*"ZIKV" + 0.259*"virus" + 0.192*"Zika" + 0.151*"infection"'),
+         (1, '-0.515*"ZIKV" + 0.241*"women" + 0.189*"virus" + 0.179*"pregnant"'),
+         (2, '-0.338*"ZIKV" + 0.251*"YF" + 0.201*"antibodies" + 0.194*"antibody"'),
+         (3, '-0.276*"ZIKV" + -0.170*"women" + 0.133*"spread" + -0.118*"pregnant"'),
+         (4,
+          '0.373*"Ae" + 0.174*"transmission" + -0.158*"microcephaly" + 0.139*"aegypti"'),
+         (5, '0.281*"YF" + -0.205*"patients" + 0.162*"microcephaly" + 0.150*"ZIKV"'),
+         (6, '-0.245*"Ae" + 0.196*"ZIKV" + -0.176*"Brazil" + -0.162*"microcephaly"'),
+         (7, '0.419*"YF" + -0.131*"viruses" + -0.120*"public" + -0.115*"health"'),
+         (8, '0.161*"sequence" + 0.155*"sequences" + -0.154*"Ae" + -0.135*"ZIKV"'),
+         (9, '0.367*"YF" + 0.174*"Ae" + -0.145*"viruses" + 0.130*"©"'),
+         (10, '0.196*"BarrÃ" + 0.195*"syndrome" + 0.195*"Guillain" + 0.185*"©"'),
+         (11, '-0.189*"blood" + 0.165*"Ae" + 0.126*"returning" + 0.124*"infection"'),
+         (12,
+          '-0.260*"antibody" + -0.203*"enhancement" + -0.201*"heterologous" + 0.154*"yellow"'),
+         (13,
+          '0.230*"YF" + -0.130*"antibody" + -0.127*"Health" + 0.123*"abnormalities"'),
+         (14, '-0.234*"xa0" + 0.234*"rabbit" + -0.204*"Â" + -0.145*".("'),
+         (15, '0.248*"rabbit" + -0.239*"blood" + 0.178*"rabbits" + -0.139*"women"'),
+         (16, '0.171*".\textbackslash{}'," + -0.133*"rabbit" + -0.129*"rabbits" + -0.119*"bites"'),
+         (17, '0.219*"xa0" + 0.192*"Â" + 0.139*"women" + 0.129*"pregnant"'),
+         (18, '0.192*"cells" + 0.181*"brain" + 0.147*"human" + 0.127*"serum"'),
+         (19, '-0.217*"rabbit" + -0.139*"rabbits" + -0.136*"blood" + 0.118*"cells"'),
+         (20, '-0.132*"antibody" + 0.121*"PCR" + -0.111*"patients" + -0.104*"report"'),
+         (21, '-0.179*"rabbit" + 0.124*"disease" + 0.113*"xa0" + -0.109*"patients"'),
+         (22, '0.213*"rabbits" + -0.199*"rabbit" + -0.162*"fever" + -0.126*"blood"'),
+         (23,
+          '0.186*"saliva" + -0.116*"sexual" + -0.112*"risk" + -0.107*"transmission"'),
+         (24,
+          '0.177*"rabbits" + -0.174*"abnormalities" + -0.130*".\textbackslash{}'," + -0.128*"countries"'),
+         (25,
+          '-0.197*"rabbits" + 0.162*"rabbit" + 0.117*"disease" + -0.103*"fattening"'),
+         (26, '-0.132*"assay" + 0.127*"patients" + 0.115*"rabbit" + -0.100*"detect"'),
+         (27, '-0.127*"dengue" + 0.108*"GBS" + 0.101*"new" + 0.100*"vaccine"'),
+         (28, '0.118*"rabbits" + 0.113*"viruses" + -0.112*"patient" + 0.110*"blood"'),
+         (29,
+          '-0.120*"abnormalities" + 0.113*"disease" + -0.104*"global" + -0.095*"infants"')]
+\end{Verbatim}
+        
+    Podemos também olhar para os documentos do nosso corpus como uma
+combinação linear dos assuntos
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}57}]:} \PY{k}{for} \PY{n}{doc}  \PY{o+ow}{in} \PY{n}{corpus\PYZus{}lsi}\PY{p}{:}
+             \PY{k}{print}\PY{p}{(}\PY{n}{doc}\PY{p}{)}
+             \PY{k}{break}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[(0, 0.29346796889527155), (1, -0.046389179323431673), (2, 0.059619411478518555), (3, -0.33877360175144577), (4, -0.0017954990630196757), (5, 0.087521432463480722), (6, 0.015937793679183316), (7, 0.081981770852204192), (8, -0.051373652046324991), (9, -0.043190033272362288), (10, -0.082051923922451933), (11, 0.043541847929578811), (12, -0.06915202302904816), (13, -0.0168587450133801), (14, -0.11638642658052298), (15, 0.048552055176955322), (16, -0.064320124527728437), (17, -0.1037577452718921), (18, 0.10788954481007815), (19, -0.023079798657641648), (20, -0.080320770078909753), (21, -0.021998957134702582), (22, -0.0068806149580824261), (23, 0.033295097113836158), (24, -0.092836130281484117), (25, -0.031766843726336404), (26, 0.056310741182633697), (27, 0.052524222898878196), (28, -0.017710845703593502), (29, 0.015903933190004976)]
+
+    \end{Verbatim}
+
+    Podemos calcular a similaridade por assunto de um documento com todos os
+demais documentos do corpus.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}9}]:} \PY{n}{index} \PY{o}{=} \PY{n}{similarities}\PY{o}{.}\PY{n}{MatrixSimilarity}\PY{p}{(}\PY{n}{corpus\PYZus{}lsi}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+WARNING:gensim.similarities.docsim:scanning corpus to determine the number of features (consider setting `num\_features` explicitly)
+
+    \end{Verbatim}
+
+    Vamos escolher o primeiro documento do corpus para ser a referência
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}59}]:} \PY{n}{sims} \PY{o}{=} \PY{n}{index}\PY{p}{[}\PY{n}{doc}\PY{p}{]}
+         \PY{c+c1}{\PYZsh{}pprint(list(enumerate(sims)))}
+         \PY{n}{pprint}\PY{p}{(}\PY{n+nb}{sorted}\PY{p}{(}\PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{sims}\PY{p}{)}\PY{p}{)}\PY{p}{,} \PY{n}{key}\PY{o}{=}\PY{k}{lambda} \PY{n}{x}\PY{p}{:}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{reverse}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[(0, 0.99999982),
+ (430, 0.72549403),
+ (401, 0.60872328),
+ (6, 0.59549123),
+ (12, 0.58171809),
+ (27, 0.57662165),
+ (494, 0.55630046),
+ (11, 0.52500963),
+ (118, 0.51750726),
+ (2, 0.51049447),
+ (10, 0.50143945),
+ (181, 0.49604842),
+ (69, 0.4917191),
+ (477, 0.48722857),
+ (14, 0.48322293),
+ (136, 0.48118821),
+ (400, 0.4778831),
+ (464, 0.47529486),
+ (476, 0.47422501),
+ (19, 0.46904218),
+ (28, 0.46404377),
+ (32, 0.46105316),
+ (146, 0.45609295),
+ (7, 0.45096427),
+ (16, 0.44940519),
+ (42, 0.44707882),
+ (327, 0.4418284),
+ (331, 0.43761984),
+ (381, 0.43488216),
+ (391, 0.43355265),
+ (438, 0.43186057),
+ (39, 0.42472613),
+ (402, 0.41902143),
+ (443, 0.41847616),
+ (428, 0.41725233),
+ (4, 0.40815341),
+ (423, 0.39857677),
+ (31, 0.39586726),
+ (174, 0.3942855),
+ (343, 0.38758308),
+ (15, 0.38606316),
+ (44, 0.38249546),
+ (127, 0.38134465),
+ (436, 0.3808943),
+ (24, 0.37842748),
+ (46, 0.37477848),
+ (390, 0.36867413),
+ (287, 0.36813515),
+ (79, 0.36283866),
+ (173, 0.36114985),
+ (386, 0.35697776),
+ (29, 0.35541168),
+ (426, 0.35354865),
+ (247, 0.35298675),
+ (270, 0.35214853),
+ (479, 0.34941226),
+ (323, 0.34525821),
+ (30, 0.34208691),
+ (487, 0.34048578),
+ (276, 0.32532191),
+ (424, 0.3155739),
+ (250, 0.31394702),
+ (20, 0.31357282),
+ (319, 0.31175068),
+ (463, 0.31151778),
+ (265, 0.31048611),
+ (26, 0.30964071),
+ (5, 0.3048358),
+ (383, 0.30112845),
+ (22, 0.29899955),
+ (45, 0.29141614),
+ (13, 0.29048121),
+ (439, 0.28866532),
+ (253, 0.28863776),
+ (100, 0.28839076),
+ (321, 0.28801271),
+ (3, 0.28662261),
+ (335, 0.28644341),
+ (9, 0.28387386),
+ (493, 0.27354103),
+ (467, 0.27348903),
+ (419, 0.27321652),
+ (184, 0.26987803),
+ (417, 0.26781735),
+ (416, 0.26140314),
+ (62, 0.2598407),
+ (332, 0.2571899),
+ (290, 0.25666112),
+ (339, 0.25583148),
+ (408, 0.25175393),
+ (364, 0.24885221),
+ (37, 0.24842595),
+ (370, 0.24753034),
+ (357, 0.24708147),
+ (413, 0.24623224),
+ (41, 0.24603608),
+ (34, 0.24370161),
+ (144, 0.24184391),
+ (228, 0.23885594),
+ (406, 0.23874044),
+ (21, 0.23856491),
+ (105, 0.23431878),
+ (25, 0.2338796),
+ (374, 0.23339057),
+ (259, 0.22956869),
+ (63, 0.22724099),
+ (36, 0.22673251),
+ (293, 0.22455767),
+ (49, 0.22362608),
+ (266, 0.22141278),
+ (283, 0.22101258),
+ (145, 0.21871391),
+ (318, 0.21602115),
+ (17, 0.21561366),
+ (224, 0.21367896),
+ (38, 0.21156345),
+ (238, 0.21022637),
+ (18, 0.20456247),
+ (268, 0.20136975),
+ (125, 0.19918972),
+ (282, 0.19678167),
+ (442, 0.1965434),
+ (267, 0.19492197),
+ (8, 0.19341627),
+ (43, 0.19233467),
+ (360, 0.19132434),
+ (409, 0.19077259),
+ (40, 0.19002236),
+ (395, 0.18650961),
+ (35, 0.18561372),
+ (288, 0.18170361),
+ (322, 0.18111028),
+ (392, 0.17767166),
+ (225, 0.17630349),
+ (447, 0.17598939),
+ (90, 0.17574821),
+ (70, 0.17298271),
+ (33, 0.16914552),
+ (220, 0.16718359),
+ (128, 0.15888464),
+ (273, 0.1584028),
+ (465, 0.15805918),
+ (237, 0.15780987),
+ (342, 0.15617925),
+ (212, 0.15316111),
+ (455, 0.15301715),
+ (260, 0.15280342),
+ (453, 0.15245418),
+ (73, 0.15147401),
+ (272, 0.14830212),
+ (445, 0.14573909),
+ (232, 0.14516278),
+ (284, 0.14475796),
+ (182, 0.14239636),
+ (254, 0.1421784),
+ (435, 0.14191489),
+ (179, 0.13693431),
+ (82, 0.13407524),
+ (255, 0.13389364),
+ (371, 0.13349806),
+ (109, 0.1315589),
+ (269, 0.1294276),
+ (264, 0.12912217),
+ (281, 0.12572077),
+ (126, 0.12478089),
+ (275, 0.12475762),
+ (271, 0.12472754),
+ (369, 0.12258855),
+ (198, 0.11941224),
+ (308, 0.11930266),
+ (240, 0.11491327),
+ (156, 0.11461562),
+ (475, 0.11183806),
+ (286, 0.11064338),
+ (469, 0.11037435),
+ (432, 0.10911675),
+ (58, 0.10577498),
+ (241, 0.10219254),
+ (257, 0.10026775),
+ (292, 0.1002223),
+ (64, 0.098050952),
+ (429, 0.097741067),
+ (304, 0.096692123),
+ (407, 0.088893622),
+ (431, 0.088484012),
+ (1, 0.084252268),
+ (291, 0.083062232),
+ (221, 0.081332676),
+ (492, 0.080388412),
+ (297, 0.08034122),
+ (274, 0.080255099),
+ (169, 0.07829874),
+ (448, 0.076697238),
+ (289, 0.072540432),
+ (450, 0.071983255),
+ (262, 0.071418539),
+ (459, 0.06968303),
+ (441, 0.06942001),
+ (326, 0.065810584),
+ (201, 0.065015525),
+ (300, 0.061636649),
+ (334, 0.05882737),
+ (108, 0.05695007),
+ (132, 0.053479135),
+ (294, 0.051079206),
+ (301, 0.048279859),
+ (263, 0.046917941),
+ (210, 0.04543823),
+ (202, 0.040444557),
+ (414, 0.039361034),
+ (175, 0.036780465),
+ (389, 0.036164738),
+ (296, 0.036102172),
+ (137, 0.036044903),
+ (278, 0.035294324),
+ (252, 0.034164082),
+ (279, 0.031633846),
+ (277, 0.030959841),
+ (203, 0.030866679),
+ (457, 0.029641988),
+ (151, 0.023029244),
+ (444, 0.02255981),
+ (427, 0.021726912),
+ (320, 0.019956056),
+ (403, 0.018656403),
+ (280, 0.016015572),
+ (249, 0.014993238),
+ (235, 0.014516835),
+ (106, 0.01446561),
+ (245, 0.0099787936),
+ (258, 0.0059193545),
+ (217, 0.0014410269),
+ (23, 0.0),
+ (48, 0.0),
+ (50, 0.0),
+ (52, 0.0),
+ (53, 0.0),
+ (54, 0.0),
+ (55, 0.0),
+ (56, 0.0),
+ (57, 0.0),
+ (59, 0.0),
+ (60, 0.0),
+ (61, 0.0),
+ (65, 0.0),
+ (66, 0.0),
+ (67, 0.0),
+ (71, 0.0),
+ (72, 0.0),
+ (74, 0.0),
+ (76, 0.0),
+ (77, 0.0),
+ (78, 0.0),
+ (80, 0.0),
+ (81, 0.0),
+ (83, 0.0),
+ (84, 0.0),
+ (85, 0.0),
+ (86, 0.0),
+ (87, 0.0),
+ (88, 0.0),
+ (89, 0.0),
+ (91, 0.0),
+ (92, 0.0),
+ (93, 0.0),
+ (94, 0.0),
+ (95, 0.0),
+ (96, 0.0),
+ (97, 0.0),
+ (98, 0.0),
+ (99, 0.0),
+ (101, 0.0),
+ (102, 0.0),
+ (103, 0.0),
+ (104, 0.0),
+ (107, 0.0),
+ (110, 0.0),
+ (111, 0.0),
+ (113, 0.0),
+ (114, 0.0),
+ (115, 0.0),
+ (117, 0.0),
+ (119, 0.0),
+ (120, 0.0),
+ (121, 0.0),
+ (122, 0.0),
+ (123, 0.0),
+ (124, 0.0),
+ (129, 0.0),
+ (130, 0.0),
+ (131, 0.0),
+ (133, 0.0),
+ (134, 0.0),
+ (135, 0.0),
+ (138, 0.0),
+ (139, 0.0),
+ (140, 0.0),
+ (141, 0.0),
+ (142, 0.0),
+ (143, 0.0),
+ (147, 0.0),
+ (148, 0.0),
+ (149, 0.0),
+ (150, 0.0),
+ (152, 0.0),
+ (153, 0.0),
+ (154, 0.0),
+ (155, 0.0),
+ (157, 0.0),
+ (158, 0.0),
+ (159, 0.0),
+ (160, 0.0),
+ (161, 0.0),
+ (162, 0.0),
+ (163, 0.0),
+ (164, 0.0),
+ (165, 0.0),
+ (166, 0.0),
+ (167, 0.0),
+ (168, 0.0),
+ (170, 0.0),
+ (171, 0.0),
+ (172, 0.0),
+ (176, 0.0),
+ (177, 0.0),
+ (178, 0.0),
+ (180, 0.0),
+ (183, 0.0),
+ (185, 0.0),
+ (186, 0.0),
+ (187, 0.0),
+ (188, 0.0),
+ (190, 0.0),
+ (191, 0.0),
+ (192, 0.0),
+ (193, 0.0),
+ (194, 0.0),
+ (195, 0.0),
+ (196, 0.0),
+ (197, 0.0),
+ (199, 0.0),
+ (200, 0.0),
+ (204, 0.0),
+ (205, 0.0),
+ (207, 0.0),
+ (209, 0.0),
+ (211, 0.0),
+ (213, 0.0),
+ (214, 0.0),
+ (215, 0.0),
+ (216, 0.0),
+ (218, 0.0),
+ (219, 0.0),
+ (222, 0.0),
+ (223, 0.0),
+ (226, 0.0),
+ (227, 0.0),
+ (230, 0.0),
+ (231, 0.0),
+ (234, 0.0),
+ (236, 0.0),
+ (239, 0.0),
+ (242, 0.0),
+ (243, 0.0),
+ (244, 0.0),
+ (248, 0.0),
+ (261, 0.0),
+ (299, 0.0),
+ (302, 0.0),
+ (303, 0.0),
+ (305, 0.0),
+ (306, 0.0),
+ (307, 0.0),
+ (309, 0.0),
+ (310, 0.0),
+ (311, 0.0),
+ (312, 0.0),
+ (313, 0.0),
+ (314, 0.0),
+ (315, 0.0),
+ (316, 0.0),
+ (317, 0.0),
+ (324, 0.0),
+ (325, 0.0),
+ (328, 0.0),
+ (329, 0.0),
+ (330, 0.0),
+ (333, 0.0),
+ (336, 0.0),
+ (337, 0.0),
+ (338, 0.0),
+ (340, 0.0),
+ (341, 0.0),
+ (344, 0.0),
+ (345, 0.0),
+ (346, 0.0),
+ (347, 0.0),
+ (348, 0.0),
+ (349, 0.0),
+ (353, 0.0),
+ (354, 0.0),
+ (355, 0.0),
+ (356, 0.0),
+ (358, 0.0),
+ (359, 0.0),
+ (361, 0.0),
+ (362, 0.0),
+ (363, 0.0),
+ (365, 0.0),
+ (366, 0.0),
+ (367, 0.0),
+ (368, 0.0),
+ (372, 0.0),
+ (373, 0.0),
+ (375, 0.0),
+ (376, 0.0),
+ (377, 0.0),
+ (379, 0.0),
+ (380, 0.0),
+ (382, 0.0),
+ (384, 0.0),
+ (387, 0.0),
+ (388, 0.0),
+ (393, 0.0),
+ (394, 0.0),
+ (396, 0.0),
+ (397, 0.0),
+ (398, 0.0),
+ (399, 0.0),
+ (404, 0.0),
+ (405, 0.0),
+ (410, 0.0),
+ (411, 0.0),
+ (415, 0.0),
+ (418, 0.0),
+ (420, 0.0),
+ (421, 0.0),
+ (422, 0.0),
+ (425, 0.0),
+ (433, 0.0),
+ (437, 0.0),
+ (440, 0.0),
+ (446, 0.0),
+ (449, 0.0),
+ (451, 0.0),
+ (452, 0.0),
+ (454, 0.0),
+ (456, 0.0),
+ (458, 0.0),
+ (460, 0.0),
+ (461, 0.0),
+ (462, 0.0),
+ (466, 0.0),
+ (468, 0.0),
+ (470, 0.0),
+ (471, 0.0),
+ (474, 0.0),
+ (478, 0.0),
+ (480, 0.0),
+ (481, 0.0),
+ (482, 0.0),
+ (483, 0.0),
+ (484, 0.0),
+ (485, 0.0),
+ (486, 0.0),
+ (488, 0.0),
+ (489, 0.0),
+ (490, 0.0),
+ (491, 0.0),
+ (495, 0.0),
+ (496, 0.0),
+ (497, 0.0),
+ (351, -0.0048150718),
+ (116, -0.0076132361),
+ (47, -0.009169518),
+ (75, -0.010400436),
+ (352, -0.012126121),
+ (298, -0.014601387),
+ (378, -0.01686506),
+ (385, -0.017681999),
+ (434, -0.019802684),
+ (295, -0.022153186),
+ (206, -0.023855858),
+ (285, -0.026499337),
+ (68, -0.034925278),
+ (412, -0.042128585),
+ (208, -0.046784062),
+ (251, -0.048375197),
+ (350, -0.049632147),
+ (256, -0.050720453),
+ (229, -0.056903571),
+ (472, -0.074347325),
+ (233, -0.082470872),
+ (112, -0.085444264),
+ (189, -0.090132251),
+ (246, -0.09937162),
+ (51, -0.10629026),
+ (473, -0.10876206)]
+
+    \end{Verbatim}
+
+    \subsection{Latent Dirichlet Allocation -
+LDA}\label{latent-dirichlet-allocation---lda}
+
+O LDA é uma técnica um pouco mais sofisticada que o LSI, que envolve uma
+interpretação probabilística do que é uma assunto. Para saber mais, veja
+este artigo: http://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}13}]:} \PY{n}{lda\PYZus{}model} \PY{o}{=} \PY{n}{models}\PY{o}{.}\PY{n}{ldamodel}\PY{o}{.}\PY{n}{LdaModel}\PY{p}{(}\PY{n}{corpus}\PY{p}{,} \PY{n}{id2word}\PY{o}{=}\PY{n}{dicionario}\PY{p}{,} \PY{n}{num\PYZus{}topics}\PY{o}{=}\PY{l+m+mi}{30}\PY{p}{,} \PY{n}{passes}\PY{o}{=}\PY{l+m+mi}{10}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}14}]:} \PY{n}{lda\PYZus{}model}\PY{o}{.}\PY{n}{show\PYZus{}topics}\PY{p}{(}\PY{l+m+mi}{30}\PY{p}{)}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}14}]:} [(0,
+           '0.012*The + 0.008*population + 0.008*new + 0.007*diseases + 0.007*development + 0.006*viral + 0.006*Chinese + 0.005*public + 0.005*inactivation + 0.005*Chikungunya'),
+          (1,
+           '0.021*Aedes + 0.016*mosquito + 0.016*human + 0.009*vector + 0.008*viruses + 0.008*U + 0.008*aegypti + 0.008*S + 0.007*2007 + 0.007*south'),
+          (2,
+           "0.000*virus + 0.000*\%, + 0.000*ZIKV + 0.000*vector + 0.000*1 + 0.000*arboviruses + 0.000*Zika + 0.000*Polynesia + 0.000*.', + 0.000*DENV"),
+          (3,
+           "0.024*virus + 0.013*fever + 0.013*Zika + 0.008*.'] + 0.007*[' + 0.007*antibodies + 0.007*The + 0.007*sera + 0.007*ZIKV + 0.007*areas"),
+          (4,
+           "0.029*virus + 0.013*Zika + 0.010*blood + 0.010*infected + 0.010*MAb + 0.009*ZIKV + 0.007*cells + 0.007*fluorescent + 0.007*[' + 0.007*.']"),
+          (5,
+           '0.057*virus + 0.053*Zika + 0.018*infection + 0.017*transmission + 0.011*women + 0.010*disease + 0.009*pregnant + 0.009*microcephaly + 0.008*cases + 0.008*pregnancy'),
+          (6,
+           "0.012*Zika + 0.011*The + 0.011*virus + 0.010*), + 0.009*1 + 0.007*ZIKV + 0.007*viruses + 0.007*.', + 0.007*2 + 0.007*['"),
+          (7,
+           "0.020*virus + 0.015*ZIKV + 0.010*The + 0.010*Zika + 0.008*arboviruses + 0.008*.'] + 0.008*[' + 0.005*Polynesia + 0.005*blood + 0.005*French"),
+          (8,
+           '0.016*virus + 0.013*cases + 0.013*Zika + 0.011*ZIKV + 0.009*microcephaly + 0.007*The + 0.007*outbreak + 0.007*quarantine + 0.007*dysfunction + 0.007*lesions'),
+          (9,
+           '0.017*virus + 0.011*viruses + 0.010*infection + 0.009*The + 0.009*Zika + 0.008*rabbits + 0.007*mosquito + 0.006*days + 0.005*one + 0.005*two'),
+          (10,
+           '0.012*ZIKV + 0.012*yellow + 0.011*fever + 0.010*In + 0.009*virus + 0.009*amaril + 0.007*Africa + 0.007*entomological + 0.007*positive + 0.007*West'),
+          (11,
+           '0.009*Zika + 0.008*YF + 0.007*virus + 0.007*microcephaly + 0.007*Health + 0.007*research + 0.007*xa0 + 0.007*Â + 0.007*increased + 0.007*epidemic'),
+          (12,
+           "0.038*ZIKV + 0.021*virus + 0.015*dengue + 0.013*Zika + 0.012*The + 0.008*viruses + 0.007*.', + 0.007*[' + 0.007*fever + 0.007*RNA"),
+          (13,
+           '0.012*ZIKV + 0.010*reported + 0.010*virus + 0.009*sexual + 0.009*HIV + 0.009*Brazil + 0.009*4 + 0.009*Zika + 0.008*infection + 0.007*).'),
+          (14,
+           '0.016*antibody + 0.016*fever + 0.011*Zika + 0.009*dengue + 0.009*patients + 0.009*sera + 0.008*virus + 0.007*Brazil + 0.007*28 + 0.007*acute'),
+          (15,
+           "0.015*virus + 0.012*patients + 0.007*The + 0.007*new + 0.007*part + 0.005*fever + 0.005*[' + 0.005*mosquito + 0.005*.'] + 0.005*two"),
+          (16,
+           "0.010*2 + 0.010*yellow + 0.010*fever + 0.009*ZIKV + 0.009*flaviviruses + 0.008*Zika + 0.008*IgM + 0.007*virus + 0.007*3 + 0.007*.']"),
+          (17,
+           '0.018*February + 0.016*Zika + 0.012*virus + 0.012*The + 0.011*patient + 0.011*fever + 0.008*disease + 0.006*6th + 0.006*pain + 0.006*rash'),
+          (18,
+           '0.012*suckling + 0.009*). + 0.007*24 + 0.007*events + 0.007*Two + 0.007*ELISA + 0.006*three + 0.006*identity + 0.006*acid + 0.005*1'),
+          (19,
+           '0.024*virus + 0.020*ZIKV + 0.019*Zika + 0.013*fever + 0.011*The + 0.010*antibodies + 0.010*infection + 0.009*YF + 0.008*antibody + 0.008*dengue'),
+          (20,
+           '0.017*ZIKV + 0.011*xa0ppm + 0.010*epidemic + 0.010*Zika + 0.009*virus + 0.009*The + 0.008*A + 0.008*reported + 0.007*3 + 0.006*aegypti'),
+          (21,
+           "0.016*rabbit + 0.011*LTI + 0.006*virus + 0.006*development + 0.006*emerging + 0.006*pathogens + 0.006*delivery + 0.006*vaccines + 0.006*.'] + 0.006*['"),
+          (22,
+           '0.020*© + 0.019*BarrÃ + 0.019*Guillain + 0.017*syndrome + 0.016*patients + 0.011*\%) + 0.009*ZIKV + 0.008*virus + 0.008*study + 0.006*associated'),
+          (23,
+           "0.025*ZIKV + 0.012*cells + 0.009*rabbits + 0.008*Zika + 0.008*The + 0.007*human + 0.007*infection + 0.006*[' + 0.006*virus + 0.006*.']"),
+          (24,
+           "0.019*virus + 0.010*antibodies + 0.008*fever + 0.008*ZIKV + 0.007*Zika + 0.007*viruses + 0.007*The + 0.007*tested + 0.006*[' + 0.006*.']"),
+          (25,
+           "0.014*virus + 0.013*antibody + 0.013*ZIKV + 0.012*abnormalities + 0.012*infection + 0.011*heterologous + 0.010*enhancement + 0.010*infants + 0.009*1 + 0.009*.',"),
+          (26,
+           '0.027*ZIKV + 0.024*microcephaly + 0.024*virus + 0.021*Brazil + 0.017*Zika + 0.016*women + 0.012*pregnancy + 0.011*cases + 0.010*infection + 0.009*2015'),
+          (27,
+           '0.017*virus + 0.015*Zika + 0.011*mosquito + 0.008*infection + 0.008*control + 0.007*The + 0.007*Aedes + 0.006*blood + 0.006*dioxide + 0.006*carbon'),
+          (28,
+           '0.022*virus + 0.021*ZIKV + 0.014*Ae + 0.013*Zika + 0.013*The + 0.010*infection + 0.010*Aedes + 0.008*mosquitoes + 0.008*aegypti + 0.007*In'),
+          (29,
+           '0.015*rabbits + 0.015*fattening + 0.011*virus + 0.008*group + 0.008*throughout + 0.008*disease + 0.007*spread + 0.007*Health + 0.006*behaviour + 0.006*16')]
+\end{Verbatim}
+        
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}16}]:} \PY{n}{lsi}\PY{o}{.}\PY{n}{save}\PY{err}{?}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} 
+\end{Verbatim}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}
