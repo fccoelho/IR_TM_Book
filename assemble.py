@@ -47,5 +47,5 @@ if __name__=="__main__":
     nb_tex_files = glob.glob('*.tex')
     chop_files(nb_tex_files)
     chapter_files = [f.split('/')[1].split('.tex')[0] for f in glob.glob('Book/chapter*.tex')]
-
+    #TODO: Move directories with stattic files to Book/
     render(chapter_files)
