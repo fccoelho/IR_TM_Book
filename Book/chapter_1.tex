@@ -1,0 +1,197 @@
+\chapter{Pratica 5 Modelos de Linguagem}
+
+    
+    
+
+    
+    \section{Modelos de Linguagem}\label{modelos-de-linguagem}
+
+Modelos de Linguagem envolvem a estimação de probabilidades condicionais
+de ocorrência de um termo dado um contexto.
+\[P_{bi}(t_1t_2t_3t_4) = P(t_1)P(t_2|t_1)P(t_3|t_1t_2)P(t_4|t_1t_2t_3)\]
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}7}]:} \PY{k+kn}{import} \PY{n+nn}{nltk}
+        \PY{k+kn}{import} \PY{n+nn}{string}
+        \PY{k+kn}{from} \PY{n+nn}{nltk}\PY{n+nn}{.}\PY{n+nn}{corpus} \PY{k}{import} \PY{n}{machado}
+        \PY{k+kn}{from} \PY{n+nn}{nltk}\PY{n+nn}{.}\PY{n+nn}{corpus} \PY{k}{import} \PY{n}{stopwords}
+        \PY{o}{\PYZpc{}}\PY{k}{pylab} inline
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Populating the interactive namespace from numpy and matplotlib
+
+    \end{Verbatim}
+
+    \subsubsection{Modelo Unigrama (bag of
+words)}\label{modelo-unigrama-bag-of-words}
+
+neste modelo, a ordem das palavras não importa.
+\[P_{bi}(t_1t_2t_3t_4) = P(t_1)P(t_2)P(t_3)P(t_4)\]
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}8}]:} \PY{n}{swu} \PY{o}{=} \PY{n}{stopwords}\PY{o}{.}\PY{n}{words}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{portuguese}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)} \PY{o}{+} \PY{n+nb}{list} \PY{p}{(}\PY{n}{string}\PY{o}{.}\PY{n}{punctuation}\PY{p}{)}
+        \PY{n}{wordgen} \PY{o}{=} \PY{p}{(}\PY{n}{word} \PY{k}{for} \PY{n}{word} \PY{o+ow}{in} \PY{n}{machado}\PY{o}{.}\PY{n}{words}\PY{p}{(}\PY{p}{)} \PY{k}{if} \PY{n}{word}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)} \PY{o+ow}{not} \PY{o+ow}{in} \PY{n}{swu}\PY{p}{)}
+        \PY{n}{fd} \PY{o}{=} \PY{n}{nltk}\PY{o}{.}\PY{n}{FreqDist}\PY{p}{(}\PY{n}{wordgen}\PY{p}{)}
+        \PY{n}{fd}\PY{o}{.}\PY{n}{most\PYZus{}common}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{)}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}8}]:} [('\textbackslash{}x97', 25386),
+         ('é', 22286),
+         ('--', 9643),
+         ('{\ldots}', 8180),
+         ('disse', 6444),
+         ('ser', 4831),
+         ('casa', 4821),
+         ('tempo', 4339),
+         ('ainda', 4226),
+         ('coisa', 3999),
+         ('dia', 3959),
+         ('olhos', 3936),
+         ('tudo', 3879),
+         ('lo', 3726),
+         ('outro', 3652),
+         ('nada', 3648),
+         ('tão', 3592),
+         ('outra', 3553),
+         ('D', 3495),
+         ('dois', 3494)]
+\end{Verbatim}
+        
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}9}]:} \PY{n}{x}\PY{p}{,}\PY{n}{y} \PY{o}{=} \PY{n+nb}{zip}\PY{p}{(}\PY{o}{*}\PY{n}{fd}\PY{o}{.}\PY{n}{most\PYZus{}common}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}10}]:} \PY{n}{barh}\PY{p}{(}\PY{n}{bottom}\PY{o}{=}\PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{)}\PY{p}{,} \PY{n}{width}\PY{o}{=}\PY{n}{y}\PY{p}{)}\PY{p}{;}
+         \PY{n}{ax} \PY{o}{=} \PY{n}{gca}\PY{p}{(}\PY{p}{)}
+         \PY{n}{ax}\PY{o}{.}\PY{n}{set}\PY{p}{(}\PY{n}{yticks}\PY{o}{=}\PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{n}{yticklabels}\PY{o}{=}\PY{n}{x}\PY{p}{)}\PY{p}{;}
+         \PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{frequência}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{;}
+\end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Pratica 5 Modelos de Linguagem_files/Pratica 5 Modelos de Linguagem_5_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \subsubsection{Bigramas}\label{bigramas}
+
+Uma alternativa ao modelo bag-of-words onde as probabilidades são
+independentes, é o modelo bigrama. onde calculamos a probabilidade de
+ocorrência de uma palavra condicionada à ocorrência da anterior.
+\[P_{bi}(t_1t_2t_3t_4) = P(t_1)P(t_2|t_1)P(t_3|t_2)P(t_4|t_3)\]
+nltk.ConditionalFreqDist é um estimador de probabilidades condicionais.
+Dada uma lista de bigramas, para cada palavra no vocabulário, ele
+calculará uma distribuição de frequências para a próxima palavra.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}11}]:} \PY{n}{wordgen} \PY{o}{=} \PY{p}{(}\PY{n}{word} \PY{k}{for} \PY{n}{word} \PY{o+ow}{in} \PY{n}{machado}\PY{o}{.}\PY{n}{words}\PY{p}{(}\PY{p}{)} \PY{p}{)}\PY{c+c1}{\PYZsh{}if word.lower() not in swu)}
+         \PY{n}{machado\PYZus{}2gram} \PY{o}{=} \PY{n}{nltk}\PY{o}{.}\PY{n}{ConditionalFreqDist}\PY{p}{(}\PY{n}{nltk}\PY{o}{.}\PY{n}{bigrams}\PY{p}{(}\PY{n}{wordgen}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+
+    \emph{conditions()} retorna as palavras para as quais temos
+distribuições condicionais construídas.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}12}]:} \PY{n}{machado\PYZus{}2gram}\PY{o}{.}\PY{n}{conditions}\PY{p}{(}\PY{p}{)}\PY{p}{[}\PY{p}{:}\PY{l+m+mi}{10}\PY{p}{]}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}12}]:} ['policia',
+          'abat',
+          'victa',
+          'deveres',
+          'dinástica',
+          'consistiam',
+          'frenéticos',
+          'Diga',
+          'bolsinha',
+          'federação']
+\end{Verbatim}
+        
+    Podemos obter a contagem de palavras que se seguem à uma palavra
+específica.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}13}]:} \PY{n}{machado\PYZus{}2gram}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{exercia}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}13}]:} FreqDist(\{'-': 1,
+                   'a': 3,
+                   'aquele': 1,
+                   'as': 1,
+                   'com': 1,
+                   'de': 1,
+                   'desde': 2,
+                   'em': 2,
+                   'então': 1,
+                   'esse': 1,
+                   'interinamente': 1,
+                   'mais': 1,
+                   'na': 1,
+                   'nela': 3,
+                   'nele': 1,
+                   'no': 1,
+                   'o': 4,
+                   'outra': 1,
+                   'realmente': 1,
+                   'sobre': 4,
+                   'um': 3,
+                   'uma': 1\})
+\end{Verbatim}
+        
+    Ou podemos obter a Probabilidade por máxima verossimilhança:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}14}]:} \PY{n}{machado\PYZus{}2gram\PYZus{}cp} \PY{o}{=} \PY{n}{nltk}\PY{o}{.}\PY{n}{ConditionalProbDist}\PY{p}{(}\PY{n}{machado\PYZus{}2gram}\PY{p}{,} \PY{n}{nltk}\PY{o}{.}\PY{n}{MLEProbDist}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}15}]:} \PY{n}{cp} \PY{o}{=} \PY{n}{machado\PYZus{}2gram\PYZus{}cp}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{exercia}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+         \PY{n}{cp}\PY{o}{.}\PY{n}{samples}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}15}]:} dict\_keys(['realmente', 'um', 'a', 'interinamente', 'em', 'na', 'uma', '-', 'as', 'o', 'esse', 'de', 'desde', 'então', 'nele', 'outra', 'sobre', 'nela', 'com', 'aquele', 'mais', 'no'])
+\end{Verbatim}
+        
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}16}]:} \PY{n}{cp}\PY{o}{.}\PY{n}{prob}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{sobre}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}16}]:} 0.1111111111111111
+\end{Verbatim}
+        
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}17}]:} \PY{k}{def} \PY{n+nf}{gera\PYZus{}texto}\PY{p}{(}\PY{n}{palavra\PYZus{}inicial}\PY{p}{,} \PY{n}{cpd}\PY{p}{,}\PY{n}{numero}\PY{o}{=}\PY{l+m+mi}{50}\PY{p}{)}\PY{p}{:}
+             
+             \PY{n}{w} \PY{o}{=} \PY{n}{palavra\PYZus{}inicial}
+             \PY{n}{texto} \PY{o}{=} \PY{n}{w}
+             \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{numero}\PY{p}{)}\PY{p}{:}
+                 \PY{n}{w2} \PY{o}{=} \PY{n}{cpd}\PY{p}{[}\PY{n}{w}\PY{p}{]}\PY{o}{.}\PY{n}{generate}\PY{p}{(}\PY{p}{)}
+                 \PY{n}{texto} \PY{o}{+}\PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZsq{}} \PY{o}{+} \PY{n}{w2}
+                 \PY{n}{w} \PY{o}{=} \PY{n}{w2}
+             \PY{k}{return} \PY{n}{texto}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}18}]:} \PY{n}{gera\PYZus{}texto}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Cresceu}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{machado\PYZus{}2gram\PYZus{}cp}\PY{p}{)}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}18}]:} 'Cresceu ainda hoje e conclui ? VULCANO É cruel , meias {\ldots} Pedro é ? \textbackslash{}x97 Ora essa esperança . Paulo . Excia . Maria Benedita . Tendo o primeiro ocorre , quando um do século não acreditava firmemente a Com os olhos da filha , e adorados que até a'
+\end{Verbatim}
+        
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} 
+\end{Verbatim}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    

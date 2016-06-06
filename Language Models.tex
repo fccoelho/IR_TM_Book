@@ -140,7 +140,7 @@
     \def\gt{>}
     \def\lt{<}
     % Document parameters
-    \title{Basic Information Retrieval}
+    \title{Language Models}
     
     
     
@@ -275,238 +275,187 @@
     
 
     
-    \section{Inverted Indices and Boolean
-Search}\label{inverted-indices-and-boolean-search}
+    \section{Modelos de Linguagem}\label{modelos-de-linguagem}
 
-In this chapter, we will learn how to manually construct an inverted
-index in pure Python. To help us in this task we shall make use of the
-\href{http://nltk.org}{NLTK} natural language processing library.
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}1}]:} \PY{k+kn}{import} \PY{n+nn}{nltk}
-        \PY{k+kn}{import} \PY{n+nn}{os}
-\end{Verbatim}
-
-    \subsection{Choosing a collection of
-Documents}\label{choosing-a-collection-of-documents}
-
-Collections of documents, also know as \emph{corpora} or \emph{corpus}
-(in sigular form), are the starting point of any information retrieval
-task.
-
-Em seguida vamos importar mais coisas necessárias para o nosso trabalho.
-Note que estamos baixando a obra completa de Machado de Assis, com a
-qual iremos alimentar nosso índice.
+Modelos de Linguagem envolvem a estimação de probabilidades condicionais
+de ocorrência de um termo dado um contexto.
+\[P_{bi}(t_1t_2t_3t_4) = P(t_1)P(t_2|t_1)P(t_3|t_1t_2)P(t_4|t_1t_2t_3)\]
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}2}]:} \PY{k+kn}{from} \PY{n+nn}{nltk}\PY{n+nn}{.}\PY{n+nn}{corpus} \PY{k}{import} \PY{n}{machado}\PY{p}{,} \PY{n}{mac\PYZus{}morpho}
-        \PY{k+kn}{from} \PY{n+nn}{nltk}\PY{n+nn}{.}\PY{n+nn}{tokenize} \PY{k}{import} \PY{n}{WordPunctTokenizer}
-        \PY{k+kn}{from} \PY{n+nn}{nltk}\PY{n+nn}{.}\PY{n+nn}{corpus} \PY{k}{import} \PY{n}{stopwords}
+{\color{incolor}In [{\color{incolor}7}]:} \PY{k+kn}{import} \PY{n+nn}{nltk}
         \PY{k+kn}{import} \PY{n+nn}{string}
-        \PY{k+kn}{from} \PY{n+nn}{collections} \PY{k}{import} \PY{n}{defaultdict}
-        \PY{k+kn}{from} \PY{n+nn}{nltk}\PY{n+nn}{.}\PY{n+nn}{stem}\PY{n+nn}{.}\PY{n+nn}{snowball} \PY{k}{import} \PY{n}{PortugueseStemmer}
-\end{Verbatim}
-
-    Vamos também baixar o banco de \emph{stopwords} do NLTK. Stop words são
-um conjunto de palavras que normalmente carregam baixo conteúdo
-semântico e portanto não são alvo de buscas.
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}3}]:} \PY{n}{nltk}\PY{o}{.}\PY{n}{download}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{stopwords}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
-        \PY{n}{nltk}\PY{o}{.}\PY{n}{download}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{machado}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{k+kn}{from} \PY{n+nn}{nltk}\PY{n+nn}{.}\PY{n+nn}{corpus} \PY{k}{import} \PY{n}{machado}
+        \PY{k+kn}{from} \PY{n+nn}{nltk}\PY{n+nn}{.}\PY{n+nn}{corpus} \PY{k}{import} \PY{n}{stopwords}
+        \PY{o}{\PYZpc{}}\PY{k}{pylab} inline
 \end{Verbatim}
 
     \begin{Verbatim}[commandchars=\\\{\}]
-[nltk\_data] Downloading package stopwords to
-[nltk\_data]     /home/fccoelho/nltk\_data{\ldots}
-[nltk\_data]   Package stopwords is already up-to-date!
-[nltk\_data] Downloading package machado to /home/fccoelho/nltk\_data{\ldots}
-[nltk\_data]   Package machado is already up-to-date!
+Populating the interactive namespace from numpy and matplotlib
 
     \end{Verbatim}
 
-            \begin{Verbatim}[commandchars=\\\{\}]
-{\color{outcolor}Out[{\color{outcolor}3}]:} True
-\end{Verbatim}
-        
-    \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}7}]:} \PY{n}{textos} \PY{o}{=} \PY{p}{[}\PY{n}{machado}\PY{o}{.}\PY{n}{raw}\PY{p}{(}\PY{n+nb}{id}\PY{p}{)} \PY{k}{for} \PY{n+nb}{id} \PY{o+ow}{in} \PY{n}{machado}\PY{o}{.}\PY{n}{fileids}\PY{p}{(}\PY{p}{)}\PY{p}{]}
-\end{Verbatim}
+    \subsubsection{Modelo Unigrama (bag of
+words)}\label{modelo-unigrama-bag-of-words}
+
+neste modelo, a ordem das palavras não importa.
+\[P_{bi}(t_1t_2t_3t_4) = P(t_1)P(t_2)P(t_3)P(t_4)\]
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}9}]:} \PY{n}{textos}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{p}{:}\PY{l+m+mi}{80}\PY{p}{]}
-\end{Verbatim}
-
-            \begin{Verbatim}[commandchars=\\\{\}]
-{\color{outcolor}Out[{\color{outcolor}9}]:} 'Conto, Contos Fluminenses, 1870\textbackslash{}n\textbackslash{}nContos Fluminenses\textbackslash{}n\textbackslash{}nTexto-fonte:\textbackslash{}n\textbackslash{}nObra Completa'
-\end{Verbatim}
-        
-    Lendo o texto \emph{puro} dos livros de Machado:
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}10}]:} \PY{c+c1}{\PYZsh{}textos = [machado.raw(id) for id in machado.fileids()]}
-         \PY{c+c1}{\PYZsh{}len(textos)}
-\end{Verbatim}
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor} }]:} 
-\end{Verbatim}
-
-    Carregando a lista de stopwords em lingua portuguesa para limpeza dos
-textos. Note que é preciso trazer as palavras para \emph{UTF-8} antes de
-usá-las.
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}11}]:} \PY{n}{swu} \PY{o}{=} \PY{n}{stopwords}\PY{o}{.}\PY{n}{words}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{portuguese}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)} \PY{o}{+} \PY{n+nb}{list} \PY{p}{(}\PY{n}{string}\PY{o}{.}\PY{n}{punctuation}\PY{p}{)}
-         \PY{c+c1}{\PYZsh{}swu = [word.decode(\PYZsq{}utf8\PYZsq{}) for word in sw]}
-\end{Verbatim}
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}13}]:} \PY{n}{stopwords}\PY{o}{.}\PY{n}{words}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{portuguese}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{[}\PY{p}{:}\PY{l+m+mi}{10}\PY{p}{]}
-         \PY{c+c1}{\PYZsh{}list (string.punctuation)}
+{\color{incolor}In [{\color{incolor}8}]:} \PY{n}{swu} \PY{o}{=} \PY{n}{stopwords}\PY{o}{.}\PY{n}{words}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{portuguese}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)} \PY{o}{+} \PY{n+nb}{list} \PY{p}{(}\PY{n}{string}\PY{o}{.}\PY{n}{punctuation}\PY{p}{)}
+        \PY{n}{wordgen} \PY{o}{=} \PY{p}{(}\PY{n}{word} \PY{k}{for} \PY{n}{word} \PY{o+ow}{in} \PY{n}{machado}\PY{o}{.}\PY{n}{words}\PY{p}{(}\PY{p}{)} \PY{k}{if} \PY{n}{word}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)} \PY{o+ow}{not} \PY{o+ow}{in} \PY{n}{swu}\PY{p}{)}
+        \PY{n}{fd} \PY{o}{=} \PY{n}{nltk}\PY{o}{.}\PY{n}{FreqDist}\PY{p}{(}\PY{n}{wordgen}\PY{p}{)}
+        \PY{n}{fd}\PY{o}{.}\PY{n}{most\PYZus{}common}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{)}
 \end{Verbatim}
 
             \begin{Verbatim}[commandchars=\\\{\}]
-{\color{outcolor}Out[{\color{outcolor}13}]:} ['de', 'a', 'o', 'que', 'e', 'do', 'da', 'em', 'um', 'para']
+{\color{outcolor}Out[{\color{outcolor}8}]:} [('\textbackslash{}x97', 25386),
+         ('é', 22286),
+         ('--', 9643),
+         ('{\ldots}', 8180),
+         ('disse', 6444),
+         ('ser', 4831),
+         ('casa', 4821),
+         ('tempo', 4339),
+         ('ainda', 4226),
+         ('coisa', 3999),
+         ('dia', 3959),
+         ('olhos', 3936),
+         ('tudo', 3879),
+         ('lo', 3726),
+         ('outro', 3652),
+         ('nada', 3648),
+         ('tão', 3592),
+         ('outra', 3553),
+         ('D', 3495),
+         ('dois', 3494)]
 \end{Verbatim}
         
-    Um outro ingrediente essencial é um stemmer para a nossa língua. O
-Stemmer reduz as palavras a uma abreviação que se aproxima da ``raiz''
-da palavra.
-
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}18}]:} \PY{n}{stemmer} \PY{o}{=} \PY{n}{PortugueseStemmer}\PY{p}{(}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}9}]:} \PY{n}{x}\PY{p}{,}\PY{n}{y} \PY{o}{=} \PY{n+nb}{zip}\PY{p}{(}\PY{o}{*}\PY{n}{fd}\PY{o}{.}\PY{n}{most\PYZus{}common}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{)}\PY{p}{)}
 \end{Verbatim}
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}19}]:} \PY{n}{WordPunctTokenizer}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{tokenize}\PY{p}{(}\PY{n}{textos}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{[}\PY{p}{:}\PY{l+m+mi}{10}\PY{p}{]}
+{\color{incolor}In [{\color{incolor}10}]:} \PY{n}{barh}\PY{p}{(}\PY{n}{bottom}\PY{o}{=}\PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{)}\PY{p}{,} \PY{n}{width}\PY{o}{=}\PY{n}{y}\PY{p}{)}\PY{p}{;}
+         \PY{n}{ax} \PY{o}{=} \PY{n}{gca}\PY{p}{(}\PY{p}{)}
+         \PY{n}{ax}\PY{o}{.}\PY{n}{set}\PY{p}{(}\PY{n}{yticks}\PY{o}{=}\PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{n}{yticklabels}\PY{o}{=}\PY{n}{x}\PY{p}{)}\PY{p}{;}
+         \PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{frequência}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{;}
+\end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Language Models_files/Language Models_5_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \subsubsection{Bigramas}\label{bigramas}
+
+Uma alternativa ao modelo bag-of-words onde as probabilidades são
+independentes, é o modelo bigrama. onde calculamos a probabilidade de
+ocorrência de uma palavra condicionada à ocorrência da anterior.
+\[P_{bi}(t_1t_2t_3t_4) = P(t_1)P(t_2|t_1)P(t_3|t_2)P(t_4|t_3)\]
+nltk.ConditionalFreqDist é um estimador de probabilidades condicionais.
+Dada uma lista de bigramas, para cada palavra no vocabulário, ele
+calculará uma distribuição de frequências para a próxima palavra.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}11}]:} \PY{n}{wordgen} \PY{o}{=} \PY{p}{(}\PY{n}{word} \PY{k}{for} \PY{n}{word} \PY{o+ow}{in} \PY{n}{machado}\PY{o}{.}\PY{n}{words}\PY{p}{(}\PY{p}{)} \PY{p}{)}\PY{c+c1}{\PYZsh{}if word.lower() not in swu)}
+         \PY{n}{machado\PYZus{}2gram} \PY{o}{=} \PY{n}{nltk}\PY{o}{.}\PY{n}{ConditionalFreqDist}\PY{p}{(}\PY{n}{nltk}\PY{o}{.}\PY{n}{bigrams}\PY{p}{(}\PY{n}{wordgen}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+
+    \emph{conditions()} retorna as palavras para as quais temos
+distribuições condicionais construídas.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}12}]:} \PY{n}{machado\PYZus{}2gram}\PY{o}{.}\PY{n}{conditions}\PY{p}{(}\PY{p}{)}\PY{p}{[}\PY{p}{:}\PY{l+m+mi}{10}\PY{p}{]}
 \end{Verbatim}
 
             \begin{Verbatim}[commandchars=\\\{\}]
-{\color{outcolor}Out[{\color{outcolor}19}]:} ['Conto',
-          ',',
-          'Contos',
-          'Fluminenses',
-          ',',
-          '1870',
-          'Contos',
-          'Fluminenses',
-          'Texto',
-          '-']
+{\color{outcolor}Out[{\color{outcolor}12}]:} ['policia',
+          'abat',
+          'victa',
+          'deveres',
+          'dinástica',
+          'consistiam',
+          'frenéticos',
+          'Diga',
+          'bolsinha',
+          'federação']
 \end{Verbatim}
         
-    \subsection{Preparando o Texto}\label{preparando-o-texto}
-
-Na célula abaixo, vamos normalizar os nossos textos trazendo todas as
-palavras para caixa baixa e abreviando-as de forma a deixar apenas as
-suas raízes. Neste passo, removeremos também as \emph{stopwords}. Tenha
-paciência, esta análise vai levar algum tempo\ldots{}
+    Podemos obter a contagem de palavras que se seguem à uma palavra
+específica.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}20}]:} \PY{n}{textos\PYZus{}limpos} \PY{o}{=} \PY{p}{[}\PY{p}{]}
-         \PY{k}{for} \PY{n}{texto} \PY{o+ow}{in} \PY{n}{textos}\PY{p}{:}
-             \PY{n}{tlimpo} \PY{o}{=} \PY{p}{[}\PY{n}{stemmer}\PY{o}{.}\PY{n}{stem}\PY{p}{(}\PY{n}{token}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)}\PY{p}{)} \PY{k}{for} \PY{n}{token} \PY{o+ow}{in} \PY{n}{WordPunctTokenizer}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{tokenize}\PY{p}{(}\PY{n}{texto}\PY{p}{)} \PY{k}{if} \PY{n}{token} \PY{o+ow}{not} \PY{o+ow}{in} \PY{n}{swu}\PY{p}{]}
-             \PY{n}{textos\PYZus{}limpos}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{tlimpo}\PY{p}{)}
-\end{Verbatim}
-
-    Vejamos uma amostra do resultado:
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}21}]:} \PY{n}{textos\PYZus{}limpos}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{150}\PY{p}{:}\PY{l+m+mi}{160}\PY{p}{]}
+{\color{incolor}In [{\color{incolor}13}]:} \PY{n}{machado\PYZus{}2gram}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{exercia}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
 \end{Verbatim}
 
             \begin{Verbatim}[commandchars=\\\{\}]
-{\color{outcolor}Out[{\color{outcolor}21}]:} ['uma', 'tal', 'miss', 'doll', 'dev', 'ter', 'poet', 'tennyson', 'cor', 'ler']
+{\color{outcolor}Out[{\color{outcolor}13}]:} FreqDist(\{'-': 1,
+                   'a': 3,
+                   'aquele': 1,
+                   'as': 1,
+                   'com': 1,
+                   'de': 1,
+                   'desde': 2,
+                   'em': 2,
+                   'então': 1,
+                   'esse': 1,
+                   'interinamente': 1,
+                   'mais': 1,
+                   'na': 1,
+                   'nela': 3,
+                   'nele': 1,
+                   'no': 1,
+                   'o': 4,
+                   'outra': 1,
+                   'realmente': 1,
+                   'sobre': 4,
+                   'um': 3,
+                   'uma': 1\})
 \end{Verbatim}
         
-    \subsection{Construindo um Índice
-Invertido}\label{construindo-um-uxedndice-invertido}
-
-De posse da nossa lista de termos \emph{normalizados}, podemos agora
-construir o nosso índice invertido.
+    Ou podemos obter a Probabilidade por máxima verossimilhança:
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}22}]:} \PY{n}{indice} \PY{o}{=} \PY{n}{defaultdict}\PY{p}{(}\PY{k}{lambda}\PY{p}{:}\PY{n+nb}{set}\PY{p}{(}\PY{p}{[}\PY{p}{]}\PY{p}{)}\PY{p}{)}
-         \PY{k}{for} \PY{n}{tid}\PY{p}{,}\PY{n}{t} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{textos\PYZus{}limpos}\PY{p}{)}\PY{p}{:}
-             \PY{k}{for} \PY{n}{term} \PY{o+ow}{in} \PY{n}{t}\PY{p}{:}
-                 \PY{n}{indice}\PY{p}{[}\PY{n}{term}\PY{p}{]}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{tid}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}14}]:} \PY{n}{machado\PYZus{}2gram\PYZus{}cp} \PY{o}{=} \PY{n}{nltk}\PY{o}{.}\PY{n}{ConditionalProbDist}\PY{p}{(}\PY{n}{machado\PYZus{}2gram}\PY{p}{,} \PY{n}{nltk}\PY{o}{.}\PY{n}{MLEProbDist}\PY{p}{)}
 \end{Verbatim}
 
-    Podemos verificar a estrutura interna do nosso índice, procurando por
-uma palavra:
-
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}23}]:} \PY{n}{indice}\PY{p}{[}\PY{n}{stemmer}\PY{o}{.}\PY{n}{stem}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Dollar}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{]}
+{\color{incolor}In [{\color{incolor}15}]:} \PY{n}{cp} \PY{o}{=} \PY{n}{machado\PYZus{}2gram\PYZus{}cp}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{exercia}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+         \PY{n}{cp}\PY{o}{.}\PY{n}{samples}\PY{p}{(}\PY{p}{)}
 \end{Verbatim}
 
             \begin{Verbatim}[commandchars=\\\{\}]
-{\color{outcolor}Out[{\color{outcolor}23}]:} \{0, 3\}
+{\color{outcolor}Out[{\color{outcolor}15}]:} dict\_keys(['realmente', 'um', 'a', 'interinamente', 'em', 'na', 'uma', '-', 'as', 'o', 'esse', 'de', 'desde', 'então', 'nele', 'outra', 'sobre', 'nela', 'com', 'aquele', 'mais', 'no'])
 \end{Verbatim}
         
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}24}]:} \PY{n+nb}{print}\PY{p}{(}\PY{n}{stemmer}\PY{o}{.}\PY{n}{stem}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Salarial}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}16}]:} \PY{n}{cp}\PY{o}{.}\PY{n}{prob}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{sobre}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
 \end{Verbatim}
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-salarial
-
-    \end{Verbatim}
-
-    Vamos ver o contexto em que a palavra \emph{Salário} ocorre em um dos
-textos
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}25}]:} \PY{n}{nltk}\PY{o}{.}\PY{n}{Text}\PY{p}{(}\PY{n}{WordPunctTokenizer}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{tokenize}\PY{p}{(}\PY{n}{textos}\PY{p}{[}\PY{l+m+mi}{182}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{o}{.}\PY{n}{concordance}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Salário}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
-\end{Verbatim}
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-Displaying 2 of 2 matches:
-operários que com esse acréscimo de salário proporcionariam às suas famílias ma
-s 2 horas da sesta é equivalente ao salário de meio dia , em tais casos abonado
-
-    \end{Verbatim}
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}26}]:} \PY{k}{def} \PY{n+nf}{busca}\PY{p}{(}\PY{n}{consulta}\PY{p}{)}\PY{p}{:}
-             \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
-         \PY{l+s+sd}{    A construção de uma função de busca é deixada com exercício ao leitor}
-         \PY{l+s+sd}{    \PYZdq{}\PYZdq{}\PYZdq{}}
-             \PY{k}{pass}
-\end{Verbatim}
-
-    Mas já podemos utilizar nosso índice diretamente com alguns termos e
-verificar como o mesmo é eficiente.
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}28}]:} \PY{o}{\PYZpc{}}\PY{k}{time}
-         \PY{n}{results} \PY{o}{=} \PY{n}{indice}\PY{p}{[}\PY{n}{stemmer}\PY{o}{.}\PY{n}{stem}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{nacional}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{]}\PY{o}{\PYZam{}}\PY{n}{indice}\PY{p}{[}\PY{n}{stemmer}\PY{o}{.}\PY{n}{stem}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{perdi}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{n}{indice}\PY{p}{[}\PY{n}{stemmer}\PY{o}{.}\PY{n}{stem}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{campo}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{]}
-         \PY{n+nb}{list}\PY{p}{(}\PY{n}{results}\PY{p}{)}\PY{p}{[}\PY{p}{:}\PY{l+m+mi}{10}\PY{p}{]}
-\end{Verbatim}
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-CPU times: user 0 ns, sys: 0 ns, total: 0 ns
-Wall time: 6.2 µs
-
-    \end{Verbatim}
 
             \begin{Verbatim}[commandchars=\\\{\}]
-{\color{outcolor}Out[{\color{outcolor}28}]:} [164, 69, 122, 137, 138, 171, 155, 141, 73, 219]
+{\color{outcolor}Out[{\color{outcolor}16}]:} 0.1111111111111111
 \end{Verbatim}
         
-    Para um exame mais preciso do tempo de execução da nossa consulta,
-podemos usar a mágica do \emph{\%\%timeit}
-
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}29}]:} \PY{o}{\PYZpc{}\PYZpc{}}\PY{k}{timeit}
-         results = indice[stemmer.stem(\PYZsq{}nacional\PYZsq{})]\PYZam{}indice[stemmer.stem(\PYZsq{}perdi\PYZsq{})] \PYZhy{} indice[stemmer.stem(\PYZsq{}campo\PYZsq{})]
-         \PYZsh{}results
+{\color{incolor}In [{\color{incolor}17}]:} \PY{k}{def} \PY{n+nf}{gera\PYZus{}texto}\PY{p}{(}\PY{n}{palavra\PYZus{}inicial}\PY{p}{,} \PY{n}{cpd}\PY{p}{,}\PY{n}{numero}\PY{o}{=}\PY{l+m+mi}{50}\PY{p}{)}\PY{p}{:}
+             
+             \PY{n}{w} \PY{o}{=} \PY{n}{palavra\PYZus{}inicial}
+             \PY{n}{texto} \PY{o}{=} \PY{n}{w}
+             \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{numero}\PY{p}{)}\PY{p}{:}
+                 \PY{n}{w2} \PY{o}{=} \PY{n}{cpd}\PY{p}{[}\PY{n}{w}\PY{p}{]}\PY{o}{.}\PY{n}{generate}\PY{p}{(}\PY{p}{)}
+                 \PY{n}{texto} \PY{o}{+}\PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZsq{}} \PY{o}{+} \PY{n}{w2}
+                 \PY{n}{w} \PY{o}{=} \PY{n}{w2}
+             \PY{k}{return} \PY{n}{texto}
 \end{Verbatim}
 
     \begin{Verbatim}[commandchars=\\\{\}]
-10000 loops, best of 3: 75.7 µs per loop
+{\color{incolor}In [{\color{incolor}18}]:} \PY{n}{gera\PYZus{}texto}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Cresceu}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{machado\PYZus{}2gram\PYZus{}cp}\PY{p}{)}
+\end{Verbatim}
 
-    \end{Verbatim}
-
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}18}]:} 'Cresceu ainda hoje e conclui ? VULCANO É cruel , meias {\ldots} Pedro é ? \textbackslash{}x97 Ora essa esperança . Paulo . Excia . Maria Benedita . Tendo o primeiro ocorre , quando um do século não acreditava firmemente a Com os olhos da filha , e adorados que até a'
+\end{Verbatim}
+        
     \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor} }]:} 
 \end{Verbatim}
