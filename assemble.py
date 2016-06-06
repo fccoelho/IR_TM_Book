@@ -18,6 +18,14 @@ latex_jinja_env = jinja2.Environment(
 	loader = jinja2.FileSystemLoader(os.path.abspath('.'))
 )
 
+chapters = [
+    'Basic Information Retrieval.tex',
+    'Cosine Similarity.tex',
+    'Topic Modeling.tex',
+    'Language Models.tex',
+    'Probabilistic Text Models.tex',
+]
+
 def render(files):
     """
     Render book template
@@ -25,6 +33,18 @@ def render(files):
     template = latex_jinja_env.get_template('Book/Book_master.tex')
     with open('Book/book.tex','w') as f:
         f.write(template.render(chapters=files))
+
+def move_directories():
+    """
+    Move directories to the Book directory
+    :return:
+    """
+    for f in glob.glob('*'):
+        if f == 'Book':
+            continue
+        if os.path.isdir(f):
+            print(f)
+            os.system(r"rm -rf 'Book/{}' && mv -f '{}'/ 'Book/{}'".format(f, f, f))
 
 def chop_files(files):
     """
@@ -40,12 +60,11 @@ def chop_files(files):
                 print(exc, re.findall(pattern,text))
                 chapter_title = 'Chapter'
             body = text.split(r'\maketitle')[1].split(r'\end{document}')[0]
-            with open('Book/chapter_{}.tex'.format(n),'w') as out:
+            with open('Book/chapter_{}.tex'.format(n), 'w') as out:
                 out.write(r'\chapter{'+chapter_title+'}\n'+body)
 
 if __name__=="__main__":
-    nb_tex_files = glob.glob('*.tex')
-    chop_files(nb_tex_files)
+    move_directories()
+    chop_files(chapters)
     chapter_files = [f.split('/')[1].split('.tex')[0] for f in glob.glob('Book/chapter*.tex')]
-    #TODO: Move directories with stattic files to Book/
     render(chapter_files)
